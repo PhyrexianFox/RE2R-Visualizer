@@ -225,6 +225,14 @@ if __name__ == '__main__':
         cs_file = filedialog.askopenfilename(initialdir=Path.cwd(), title="Select cheat sheet file",
                                              filetypes=[("Text files", "*.txt")])
         if cs_file is not None:
+            with Path(cs_file).open(mode='r') as cheat_sheet:
+                pattern = "^Version [0-9]*\.[0-9]*\.[0-9]*.*"
+                if not re.match(pattern=pattern, string=cheat_sheet.readline()):
+                    messagebox.showerror(title='Unrecognized format',
+                                         message='Could not recognize cheat sheet format. '
+                                                 'Please check that you linked to a cheat sheet file.')
+                    cs_file = None
+                    return
             cs_label.configure(text=str(cs_file))
             if mode is not None:
                 run_button.config(state='normal')
