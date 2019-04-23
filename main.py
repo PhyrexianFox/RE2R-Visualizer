@@ -54,7 +54,6 @@ def cheat_sheet_to_dict(cs_path: Path):
 
 
 def is_excluded(item):
-
     if exclude_healing_var.get():
         if item in HEALING_ITEMS:
             return True
@@ -204,8 +203,20 @@ if __name__ == '__main__':
     ####################################################################################################################
 
     def run_button_callback():
+
         if cs_file is None:
             return
+
+        if (exclude_ammo_var.get() and exclude_healing_var.get() and
+            exclude_progression_var.get() and exclude_weapons_var.get()) or spoiler_percentage_var.get() == "0":
+            if messagebox.askokcancel(title='Warning: Everything excluded',
+                                      message='Your settings would result in empty maps, since everything is excluded.'
+                                              '\n\n'
+                                              'Do you really want to continue?'):
+                pass
+            else:
+                return
+
         # noinspection PyTypeChecker
         draw_items(cheat_sheet_to_dict(Path(cs_file)), percentage=int(spoiler_percentage_var.get()))
         progressbar['value'] = 100
@@ -214,11 +225,13 @@ if __name__ == '__main__':
         messagebox.showinfo('Success', 'Done. Check out your new maps in the output folder.')
         sys.exit()
 
+
     def radio_callback():
         global mode
         mode = playthrough_var.get()
         if cs_file is not None:
             run_button.config(state='normal')
+
 
     def cs_button_callback():
         global cs_file
@@ -237,8 +250,10 @@ if __name__ == '__main__':
             if mode is not None:
                 run_button.config(state='normal')
 
+
     def credit_button_callback():
         messagebox.showinfo('Credits', 'RE2R - Cheat Sheet Visualizer', detail=CREDIT_STR)
+
 
     # BIND CALLBACKS
     ####################################################################################################################
